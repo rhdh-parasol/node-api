@@ -1,5 +1,29 @@
 # node-api
 
-Tiny Node REST API playground for fullsend.
+Playground copy for [rhdh-parasol](https://github.com/rhdh-parasol), sourced from [fullsend-playground](https://github.com/fullsend-playground).
 
-This repository lives in [rhdh-parasol](https://github.com/rhdh-parasol) for fullsend playground use. Contents will be populated later.
+
+A simple REST API for task management, built with Node.js (no external dependencies).
+
+## Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | /tasks | List all tasks |
+| POST | /tasks | Create a task |
+| GET | /tasks/:id | Get a task by ID |
+| PATCH | /tasks/:id | Update a task |
+| DELETE | /tasks/:id | Delete a task |
+| GET | /health | Health check |
+
+## Run
+
+```bash
+npm start
+```
+
+## Test
+
+```bash
+npm test
+```
