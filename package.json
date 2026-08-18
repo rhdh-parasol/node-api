@@ -1,0 +1,13 @@
+{
+  "name": "node-api",
+  "version": "1.0.0",
+  "description": "A simple REST API for task management",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/**/*.test.js"
+  },
+  "keywords": ["api", "rest", "tasks"],
+  "license": "MIT"
+}
