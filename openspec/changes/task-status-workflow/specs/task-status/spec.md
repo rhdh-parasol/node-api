@@ -41,6 +41,22 @@ other fields.
 - **WHEN** a client `PATCH /tasks/1` with `{"completed": true}`
 - **THEN** the task's `status` is `"done"` and `completed` is `true`
 
+#### Scenario: Unmark done via legacy completed flag
+
+- **WHEN** a client `PATCH /tasks/1` with `{"completed": false}`
+- **THEN** the task's `status` is `"todo"` and `completed` is `false`
+
+#### Scenario: Update with invalid status is rejected
+
+- **WHEN** a client `PATCH /tasks/1` with `{"status": "donezo"}`
+- **THEN** the API responds `400` and the task is unchanged
+
+#### Scenario: Conflict between status and completed
+
+- **WHEN** a client `PATCH /tasks/1` with `{"status": "blocked", "completed": true}`
+- **THEN** the task's `status` is `"blocked"` and `completed` is `false`
+  (status wins; completed is ignored)
+
 ### Requirement: List can filter by a single status
 
 `GET /tasks` SHALL accept an optional `status` query parameter. When present,
