@@ -29,16 +29,31 @@ files. A deterministic post-script posts your output as a PR review.
 
 | Source | How to read it |
 |--------|----------------|
-| PR / issue number | `PR_NUMBER` or `ISSUE_NUMBER` |
+| Triggering PR | `GITHUB_ISSUE_URL` (always set). Number is the last path segment. |
+| PR / issue number | `PR_NUMBER` or `ISSUE_NUMBER` if set; otherwise parse `GITHUB_ISSUE_URL` |
 | Repo | `REPO_FULL_NAME` |
 | Answer text after `/fs-grillme` | `HUMAN_INSTRUCTION` (may be empty on the first turn) |
-| Prior grill turns | Review threads whose first comment contains `<!-- grillme -->` |
-| Change under review | PR diff, title/body, and relevant files in the workspace |
+| Prior grill turns | Review threads on **that same PR** whose first comment contains `<!-- grillme -->` |
+| Change under review | `gh pr diff <number>` / `gh pr view <number>` of **that PR**, plus files in the workspace |
 | Run URL | `RUN_URL` (include in footer context only if useful) |
+
+**Resolve the target PR first, before any other `gh` call:**
+
+```bash
+# .env.d may not be sourced into Bash tool shells — derive every time.
+PR="${PR_NUMBER:-${ISSUE_NUMBER:-}}"
+if [[ ! "${PR}" =~ ^[0-9]+$ ]]; then
+  PR="$(basename "${GITHUB_ISSUE_URL:-}")"
+fi
+echo "Grilling PR ${PR} (${GITHUB_ISSUE_URL:-unset})"
+```
+
+That number is the PR that triggered this run. **Do not** `gh pr list` to pick a target. **Do not** grill a different open PR, even if it looks more recently updated.
 
 If `HUMAN_INSTRUCTION` is `none`, empty, or unset, treat this as a **new or
 continuing turn without a new answer** — usually the opening questions, or the
-next turn after reviewing replies on existing threads.
+next turn after reviewing replies on existing threads. An empty instruction is
+**not** a reason to switch PRs.
 
 ## Session lifecycle
 
@@ -58,10 +73,11 @@ diff lines. Engineers reply directly to each inline comment, then trigger
 
 ## Procedure
 
-1. **Orient.** Identify the PR, read its title/body, and understand what
-   changed (`gh pr diff`, `gh pr view`, key files in the workspace). If
-   `openspec/` is in the diff, treat those artifacts as first-class decision
-   surfaces alongside the code.
+1. **Orient.** Resolve the triggering PR number as above. Then
+   `gh pr diff "$PR"` / `gh pr view "$PR"` and read the relevant files.
+   If `openspec/` is in **this** PR's diff, treat those artifacts as
+   first-class decision surfaces. Count existing grillme threads on this
+   PR: if any exist, this is **not** turn 1.
 
 2. **Load review threads.** Query the PR's review threads to find your prior
    grillme comments. Split `REPO_FULL_NAME` into owner/repo, then run:
@@ -122,6 +138,10 @@ Your final assistant message has two parts:
 
 The text before the JSON block becomes the PR review body. The post-script
 adds the `<!-- fullsend:grillme -->` marker and footer.
+
+**Your final message must start with the heading below.** Do not include
+chain-of-thought, tool narration, or "let me analyze" preamble. The
+post-script posts this text; anything before the heading is dropped.
 
 **First turn:**
 
@@ -235,6 +255,8 @@ All three fields are optional. Omit any that have no entries.
   findings. Stay on decisions, intent, and architectural alignment.
 - Do not call `gh pr review`, `gh pr comment`, or `gh issue comment` — the
   post-script owns GitHub writes.
+- **Do not grill a different PR** than the one in `GITHUB_ISSUE_URL`.
+  `gh pr list` is not how you choose a target.
 - Do not ask about facts you can verify from the PR or filesystem.
 - If the PR is empty or the change is unclear, ask one clarifying question about
   intent/scope.

@@ -28,6 +28,7 @@ if [[ -z "${_TOKEN}" ]]; then
 fi
 echo "::add-mask::${_TOKEN}"
 export GH_TOKEN="${_TOKEN}"
+RUN_URL="${RUN_URL:-${STATUS_RUN_URL:-}}"
 
 # ---------- Derive ISSUE_NUMBER ----------
 # The pre-script writes to GITHUB_ENV, but the harness runner executes
@@ -115,6 +116,14 @@ if printf '%s' "${SUMMARY}" | grep -qE '```json:grillme'; then
   MARKDOWN_BODY=$(printf '%s' "${MARKDOWN_BODY}" | sed -e 's/[[:space:]]*$//')
 fi
 
+# Drop chain-of-thought preamble. The review body starts at the Grillme heading.
+if printf '%s' "${MARKDOWN_BODY}" | grep -qE '^#{1,3}[[:space:]]+.*Grillme'; then
+  MARKDOWN_BODY=$(printf '%s' "${MARKDOWN_BODY}" | awk '
+    /^#{1,3}[[:space:]]+.*Grillme/ { keep=1 }
+    keep { print }
+  ')
+fi
+
 # ---------- Determine footer ----------
 
 is_session_complete=false
@@ -161,7 +170,10 @@ if [[ "${has_new_comments}" == "true" ]]; then
     echo "PR review posted with ${comment_count} inline comment(s)"
   else
     echo "WARNING: Failed to post PR review with inline comments — falling back to issue comment"
-    printf '%s' "${REVIEW_BODY}" | gh issue comment "${ISSUE_NUMBER}" --repo "${REPO_FULL_NAME}" --body-file -
+    FALLBACK="${REVIEW_BODY}
+
+⚠️ Inline comments were not pinned — GitHub rejected the paths/lines (they may not be in this PR's diff)."
+    printf '%s' "${FALLBACK}" | gh issue comment "${ISSUE_NUMBER}" --repo "${REPO_FULL_NAME}" --body-file -
   fi
 else
   printf '%s' "${REVIEW_BODY}" | gh issue comment "${ISSUE_NUMBER}" --repo "${REPO_FULL_NAME}" --body-file -
