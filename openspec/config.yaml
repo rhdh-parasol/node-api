@@ -1,0 +1,8 @@
+schema: spec-driven
+
+context: |
+  Domain: in-memory REST task API (node-api playground)
+  Tech stack: Node.js built-in http + Map store, no database, no auth
+  We use conventional commits
+
+  Change-local OpenSpec workspaces live in `openspec/changes/<change-name>/`.
