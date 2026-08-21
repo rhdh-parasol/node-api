@@ -27,3 +27,14 @@ npm start
 ```bash
 npm test
 ```
+
+## Fullsend playground
+
+This repo is a sandbox for fullsend agents. After this install, comment
+`/fs-grillme` on an open (non-fork) PR to run the grillme agent.
+
+1. Open a PR with a meaningful change (not just a typo).
+2. Comment `/fs-grillme`.
+3. Reply to the inline review comments with decisions.
+4. Comment `/fs-grillme` again to continue. The session ends when all
+   grillme threads are resolved.

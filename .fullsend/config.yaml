@@ -4,6 +4,12 @@
 # This file configures fullsend for per-repo installation mode.
 # See ADR 0033 for details.
 version: "1"
+# The reusable workflow overlays upstream defaults onto the standard layered
+# directories before every run. Keep repo-owned agents under custom/ so their
+# harnesses and resources remain intact.
+agents:
+    - name: grillme
+      source: custom/harness/grillme.yaml
 roles:
     - triage
     - coder
