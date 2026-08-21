@@ -25,7 +25,8 @@ skills:
   - custom/skills/grilling
 
 host_files:
-  - src: env/gcp-vertex.env
+  # Vendored: v0.36 overlay does not copy fullsend-ai/agents env/.
+  - src: custom/env/gcp-vertex.env
     dest: /sandbox/workspace/.env.d/gcp-vertex.env
     expand: true
   - src: custom/env/grillme.env
