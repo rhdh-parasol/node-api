@@ -10,7 +10,9 @@ description: >
 
 Interview the engineer about every material *decision* behind this change
 until you reach a shared understanding. Walk down each branch of the decision
-tree. For each question, pin it to the relevant diff line when one exists.
+tree. For each question, pin it to the relevant diff line when one exists,
+and include your **recommended answer** (with a brief why) on that same
+comment unless you genuinely have no stance.
 
 ## Scope: decisions, not correctness
 
@@ -29,7 +31,9 @@ Each agent run is **one turn** that may ask **several questions in parallel**:
 2. Resolve threads whose answers are satisfactory. Reply in-thread when an
    answer needs a follow-up. Leave unanswered threads alone.
 3. Pin **2–5 new questions** as inline comments on distinct decision points
-   in the diff. If a question has no diff anchor, put it in the review body.
+   in the diff. Each comment is a question plus `**Recommended:** <answer
+   and why>`. If a question has no diff anchor, put it in the review body
+   with the same recommended-answer line.
 4. Stop. Do not continue until the next `/fs-grillme` turn.
 
 A session is complete when every grillme thread is resolved and no new

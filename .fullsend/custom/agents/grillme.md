@@ -197,14 +197,14 @@ strips it from the review body and executes each action.
   "thread_replies": [
     {
       "comment_id": 12345678,
-      "body": "You said the session store is cache-only, but the fallback on cache miss isn't defined. What happens on a cold start? <!-- grillme -->"
+      "body": "You said the session store is cache-only, but the fallback on cache miss isn't defined. What happens on a cold start?\n\n**Recommended:** Fail closed and require a warm path, or document that cold start is undefined. Leaving it implicit will surprise operators. <!-- grillme -->"
     }
   ],
   "new_comments": [
     {
       "path": "src/auth/middleware.ts",
       "line": 28,
-      "body": "This middleware intercepts all routes. Is that intentional, or should it scope to `/api/*` only? <!-- grillme -->"
+      "body": "This middleware intercepts all routes. Is that intentional, or should it scope to `/api/*` only?\n\n**Recommended:** Scope to `/api/*`. Applying auth to static/health routes is usually accidental and harder to unwind later. <!-- grillme -->"
     }
   ]
 }
@@ -228,7 +228,15 @@ All three fields are optional. Omit any that have no entries.
 - `path` must be a file in the PR diff.
 - `line` must be a line number in the **new version** of the file (the `+`
   side of the diff). Use diff hunk headers to find the correct number.
-- Keep each body to 1-3 sentences. Probe a decision, not a style nit.
+- Structure each body as: the question (1–2 sentences), then a
+  `**Recommended:**` line with your preferred answer and a brief why.
+  The recommendation is the agent's stance, not a mandate — the engineer
+  still decides.
+- Omit `**Recommended:**` only when you truly have no stance (rare: a
+  values/priority call with no technical default). Do not omit it just
+  because the spec is ambiguous — that is when a recommendation is most
+  useful.
+- Probe a decision, not a style nit.
 - Aim for 2-5 new comments per turn. Each should probe a different decision
   point.
 
@@ -237,6 +245,8 @@ All three fields are optional. Omit any that have no entries.
 - Include ` <!-- grillme -->` at the end of the reply body.
 - A follow-up reply should reference the engineer's answer and ask a deeper
   question, not simply acknowledge.
+- When the follow-up is itself a decision question, include
+  `**Recommended:**` the same way as new comments.
 
 ### General rules
 
