@@ -10,6 +10,7 @@ version: "1"
 agents:
     - name: grillme
       source: custom/harness/grillme.yaml
+      model: claude-opus-4-6
 roles:
     - triage
     - coder
