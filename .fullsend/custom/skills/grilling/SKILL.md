@@ -29,7 +29,9 @@ Each agent run is **one turn** that may ask **several questions in parallel**:
 1. Read the PR (diff, description, relevant files) and existing grillme
    review threads (`<!-- grillme -->` / bot-authored inline comments).
 2. Resolve threads whose answers are satisfactory. Reply in-thread when an
-   answer needs a follow-up. Leave unanswered threads alone.
+   answer needs a follow-up — when that follow-up is itself a decision
+   question, include `**Recommended:** <answer and why>` the same way as
+   new comments. Leave unanswered threads alone.
 3. Pin **2–5 new questions** as inline comments on distinct decision points
    in the diff. Each comment is a question plus `**Recommended:** <answer
    and why>`. If a question has no diff anchor, put it in the review body
