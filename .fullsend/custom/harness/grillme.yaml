@@ -8,7 +8,7 @@
 # inline comments, plus optional thread replies/resolutions.
 
 agent: custom/agents/grillme.md
-image: ghcr.io/fullsend-ai/fullsend-code:latest
+image: ghcr.io/fullsend-ai/fullsend-code:0.57.1
 policy: custom/policies/grillme.yaml
 readonly_repo: true
 
